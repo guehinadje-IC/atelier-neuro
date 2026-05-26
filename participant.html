@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Ivory — Participez</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--navy:#1B2A4A;--gold:#C9A84C;--green:#2D6A4F;--red:#C0392B;--orange:#E07A25;--purple:#6C3483;--blue:#1A5276;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--navy);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+.hdr{width:100%;background:rgba(0,0,0,0.35);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.hdr-brand{color:var(--gold);font-weight:800;font-size:14px;}
+.hdr-status{font-size:12px;color:rgba(255,255,255,0.55);}
+.screen{display:none;width:100%;max-width:500px;padding:24px 18px;flex-direction:column;align-items:center;flex:1;}
+.screen.on{display:flex;}
+.icon-big{font-size:64px;margin-bottom:20px;}
+.pulse{animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.title-l{font-size:20px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:10px;}
+.sub-l{font-size:14px;color:rgba(255,255,255,.55);text-align:center;line-height:1.5;}
+.game-badge{background:rgba(201,168,76,.15);border:1px solid var(--gold);border-radius:12px;padding:10px 18px;font-size:15px;font-weight:800;color:var(--gold);text-align:center;width:100%;margin-bottom:18px;}
+.q-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;font-size:17px;font-weight:700;text-align:center;width:100%;line-height:1.4;margin-bottom:18px;}
+.dots{display:flex;gap:8px;margin-bottom:14px;justify-content:center;}
+.dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .3s;}
+.dot.done{background:var(--gold);}
+.dot.cur{background:#fff;}
+.btn-vrai{width:100%;padding:18px;border-radius:14px;border:none;background:var(--green);color:#fff;font-size:20px;font-weight:900;cursor:pointer;margin-bottom:10px;letter-spacing:2px;transition:opacity .2s;}
+.btn-faux{width:100%;padding:18px;border-radius:14px;border:none;background:var(--red);color:#fff;font-size:20px;font-weight:900;cursor:pointer;margin-bottom:10px;letter-spacing:2px;transition:opacity .2s;}
+.btn-opt{width:100%;padding:15px 18px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:9px;text-align:left;transition:all .2s;}
+.btn-opt:active{transform:scale(.98);}
+.btn-opt.sel{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold);}
+.btn-opt.ok{background:var(--green);border-color:var(--green);}
+.btn-opt.ko{background:var(--red);border-color:var(--red);}
+.btn-opt:disabled{cursor:default;}
+.fb{background:rgba(255,255,255,.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px;line-height:1.5;width:100%;margin-top:6px;display:none;}
+.fb.on{display:block;}
+.mem-seq{font-size:3em;font-weight:900;color:var(--gold);letter-spacing:14px;text-align:center;padding:28px;background:rgba(255,255,255,.05);border-radius:14px;width:100%;margin-bottom:16px;min-height:100px;display:flex;align-items:center;justify-content:center;}
+.mem-timer{font-size:32px;font-weight:900;color:var(--orange);text-align:center;margin-bottom:14px;}
+.mem-inputs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.mi{width:52px;height:58px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:1.6em;text-align:center;font-weight:900;}
+.mi:focus{outline:none;border-color:var(--gold);}
+.stroop-disp{font-size:3.4em;font-weight:900;text-align:center;padding:28px 18px;border-radius:14px;background:rgba(255,255,255,.05);width:100%;margin-bottom:16px;min-height:120px;display:flex;align-items:center;justify-content:center;}
+.stroop-btns{display:grid;grid-template-columns:1fr 1fr;gap:11px;width:100%;margin-bottom:12px;}
+.stroop-opt{padding:18px 10px;border-radius:14px;border:none;color:#fff;font-size:18px;font-weight:800;cursor:pointer;transition:opacity .15s;}
+.stroop-opt:active{opacity:.75;}
+.stroop-score{background:rgba(201,168,76,.18);border:1px solid var(--gold);border-radius:30px;padding:8px 22px;font-size:17px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:12px;}
+.stroop-res{font-size:26px;text-align:center;min-height:38px;margin-bottom:10px;}
+.w-input{width:100%;padding:16px 18px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;font-size:17px;margin-bottom:12px;}
+.w-input:focus{outline:none;border-color:var(--gold);}
+.w-input::placeholder{color:rgba(255,255,255,.35);}
+.words-out{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;width:100%;}
+.chip{background:var(--gold);color:var(--navy);padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px;}
+.btn-main{width:100%;padding:18px;border-radius:14px;border:none;background:var(--gold);color:var(--navy);font-size:18px;font-weight:900;cursor:pointer;transition:all .2s;margin-top:6px;}
+.btn-main:active{opacity:.8;}
+.btn-main:disabled{opacity:.45;cursor:default;}
+.btn-sec{width:100%;padding:14px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+.spinner{width:54px;height:54px;border:4px solid rgba(201,168,76,.3);border-top:4px solid var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.memo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:18px;}
+.memo-word{border-radius:10px;padding:13px;text-align:center;font-weight:700;font-size:15px;}
+.reveal-items{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px;width:100%;}
+.r-chip{padding:8px 14px;border-radius:20px;font-weight:700;font-size:13px;}
+.sent-box{text-align:center;padding:28px 16px;}
+.sent-box .ck{font-size:56px;margin-bottom:14px;}
+.sent-box p{font-size:15px;color:rgba(255,255,255,.6);}
+.note{font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:14px;line-height:1.5;}
+.join-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:24px 20px;width:100%;margin-top:20px;}
+.join-box label{font-size:12px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:8px;}
+.join-box input{width:100%;padding:14px 16px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:20px;font-weight:900;letter-spacing:4px;text-transform:uppercase;text-align:center;}
+.join-box input:focus{outline:none;border-color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <span class="hdr-brand">Ivory Consulting</span>
+  <span class="hdr-status" id="h-status">Connexion...</span>
+</div>
+
+<!-- CONNEXION -->
+<div class="screen on" id="s-conn">
+  <div style="height:50px;"></div>
+  <div class="spinner"></div>
+  <div class="title-l">Connexion en cours...</div>
+  <div class="sub-l" id="conn-msg">Connexion à la session</div>
+  <div class="note">Assurez-vous d'être connecté à internet</div>
+</div>
+
+<!-- PAS DE SESSION — saisie manuelle -->
+<div class="screen" id="s-nosession">
+  <div style="height:30px;"></div>
+  <div class="icon-big">📱</div>
+  <div class="title-l">Rejoindre la session</div>
+  <div class="sub-l">Scannez le QR code affiché par votre animateur, ou saisissez le code de session.</div>
+  <div class="join-box" style="margin-top:24px;">
+    <label>Code de session (facultatif)</label>
+    <input id="code-input" placeholder="ABC123" maxlength="40">
+    <button class="btn-main" style="margin-top:14px;" onclick="joinManual()">Rejoindre</button>
+  </div>
+  <div class="note">Le code est affiché dans le widget de session sur l'écran du présentateur.</div>
+</div>
+
+<!-- ATTENTE -->
+<div class="screen" id="s-wait">
+  <div style="height:40px;"></div>
+  <div class="icon-big pulse">🧠</div>
+  <div class="title-l">En attente de l'animateur</div>
+  <div class="sub-l">L'exercice apparaîtra ici automatiquement dès que l'animateur le lancera.</div>
+  <div class="note" style="margin-top:32px;">Ne quittez pas cette page</div>
+</div>
+
+<!-- QUIZ VRAI/FAUX -->
+<div class="screen" id="s-qvf">
+  <div class="game-badge">Quiz Neurosciences — Vrai ou Faux</div>
+  <div class="dots" id="qvf-dots"></div>
+  <div class="q-box" id="qvf-q">Chargement...</div>
+  <button class="btn-vrai" id="b-vrai" onclick="ansVF(true)">VRAI</button>
+  <button class="btn-faux" id="b-faux" onclick="ansVF(false)">FAUX</button>
+  <div class="fb" id="qvf-fb"></div>
+</div>
+
+<!-- QUIZ FINAL -->
+<div class="screen" id="s-fq">
+  <div class="game-badge">Quiz Final — Consolidation</div>
+  <div class="dots" id="fq-dots"></div>
+  <div class="q-box" id="fq-q">En attente de la première question...</div>
+  <div id="fq-opts"></div>
+  <div class="fb" id="fq-fb"></div>
+</div>
+
+<!-- MÉMOIRE -->
+<div class="screen" id="s-mem">
+  <div class="game-badge">Défi Mémoire de Travail</div>
+  <div id="mp-show">
+    <div class="sub-l" style="margin-bottom:14px;">Mémorisez cette séquence !</div>
+    <div class="mem-seq" id="ms-disp"></div>
+    <div class="mem-timer" id="ms-cd"></div>
+  </div>
+  <div id="mp-inp" style="display:none;width:100%;">
+    <div class="sub-l" style="margin-bottom:14px;text-align:center;">Entrez la séquence dans l'ordre</div>
+    <div class="mem-inputs" id="ms-inps"></div>
+    <button class="btn-main" onclick="submitMem()">Valider ma réponse</button>
+  </div>
+  <div id="mp-res" style="display:none;text-align:center;width:100%;">
+    <div style="font-size:4em;margin-bottom:14px;" id="mr-icon">🏆</div>
+    <div style="font-size:2.2em;font-weight:900;color:var(--gold);" id="mr-score"></div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;">Résultat enregistré</div>
+  </div>
+</div>
+
+<!-- STROOP -->
+<div class="screen" id="s-stroop">
+  <div class="game-badge">Effet Stroop — L'Attention en direct</div>
+  <div class="sub-l" style="margin-bottom:14px;text-align:center;">Tapez sur la <strong>couleur de l'encre</strong>, pas sur le mot</div>
+  <div class="stroop-disp" id="str-w">Prêt ?</div>
+  <div class="stroop-res" id="str-r"></div>
+  <div class="stroop-btns" id="str-btns"></div>
+  <div class="stroop-score" id="str-sc">✅ 0 | ❌ 0</div>
+  <div style="display:flex;gap:10px;width:100%;margin-top:10px;">
+    <button class="btn-main" style="flex:1;" onclick="startStr()">Démarrer</button>
+    <button class="btn-sec" style="flex:1;" onclick="stopStr()">Terminer</button>
+  </div>
+</div>
+
+<!-- MÉTHODE DES LIEUX -->
+<div class="screen" id="s-ml">
+  <div id="ml-learn">
+    <div class="game-badge">Méthode des Lieux</div>
+    <div class="sub-l" style="margin-bottom:14px;text-align:center;">Mémorisez ces 8 mots en 90 secondes<br>Imaginez un trajet et placez chaque mot dans un lieu</div>
+    <div class="memo-grid" id="ml-grid"></div>
+    <div class="mem-timer" id="ml-cd" style="display:none;"></div>
+    <button class="btn-main" id="ml-start-btn" onclick="startML()">Démarrer les 90 secondes</button>
+  </div>
+  <div id="ml-recall" style="display:none;width:100%;">
+    <div class="game-badge">Sans regarder — quels mots vous souvenez-vous ?</div>
+    <input class="w-input" id="ml-inp" placeholder="Tapez un mot + Entrée" onkeydown="addMLWord(event)">
+    <div class="words-out" id="ml-words"></div>
+    <button class="btn-main" onclick="submitML()">Envoyer mes réponses</button>
+  </div>
+  <div id="ml-reveal" style="display:none;text-align:center;width:100%;">
+    <div class="game-badge">Votre résultat</div>
+    <div class="reveal-items" id="ml-rev-items"></div>
+    <div style="font-size:1.15em;font-weight:800;color:var(--gold);" id="ml-score-t"></div>
+  </div>
+</div>
+
+<!-- NUAGE DE MOTS -->
+<div class="screen" id="s-rc">
+  <div class="game-badge">Synthèse collective</div>
+  <div class="sub-l" style="margin-bottom:20px;text-align:center;">Quel mot-clé retenez-vous de cet atelier ?<br>Il apparaîtra sur l'écran du présentateur.</div>
+  <div id="rc-form">
+    <input class="w-input" id="rc-inp" placeholder="Mon mot-clé...">
+    <button class="btn-main" onclick="sendRC()">Envoyer</button>
+  </div>
+  <div class="sent-box" id="rc-sent" style="display:none;">
+    <div class="ck">✅</div>
+    <p>Votre mot a été envoyé !<br>Regardez l'écran du présentateur.</p>
+  </div>
+</div>
+
+<!-- ERREUR -->
+<div class="screen" id="s-err">
+  <div style="height:40px;"></div>
+  <div style="font-size:56px;margin-bottom:18px;">🔴</div>
+  <div class="title-l">Connexion perdue</div>
+  <div class="sub-l" id="err-msg">Vérifiez votre connexion internet</div>
+  <button class="btn-main" style="margin-top:28px;" onclick="location.reload()">Réessayer</button>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+// ─── CONSTANTES ────────────────────────────────────────────
+const SC=[{n:'Rouge',h:'#C0392B'},{n:'Bleu',h:'#1A5276'},{n:'Vert',h:'#2D6A4F'},{n:'Or',h:'#C9A84C'},{n:'Violet',h:'#6C3483'}];
+const MW=['Objectif','Plasticité','Répétition','Sommeil','Émotion','Attention','Erreur','Focus'];
+const MW_C=['#1B2A4A','#2D6A4F','#E07A25','#6C3483','#C0392B','#C9A84C','#1A5276','#117A65'];
+
+// ─── ÉTAT ──────────────────────────────────────────────────
+const params=new URLSearchParams(location.search);
+let hostId=params.get('s')||params.get('session');
+let peer,conn,pid='p_'+Math.random().toString(36).substr(2,8);
+let curGame='waiting';
+
+// ─── CONNEXION ─────────────────────────────────────────────
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById(id);if(el)el.classList.add('on');}
+function setStatus(t){document.getElementById('h-status').textContent=t;}
+
+function init(){
+  if(!hostId){show('s-nosession');setStatus('Non connecté');return;}
+  show('s-conn');
+  peer=new Peer(undefined,{host:'0.peerjs.com',port:443,path:'/',secure:true,
+    config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}});
+  peer.on('open',function(id){
+    pid=id;
+    conn=peer.connect(hostId,{reliable:true});
+    conn.on('open',function(){
+      setStatus('Connecté');
+      show('s-wait');
+      conn.send({type:'join',pid:pid});
+    });
+    conn.on('data',onMsg);
+    conn.on('close',function(){setStatus('Déconnecté');show('s-err');});
+    conn.on('error',function(e){show('s-err');document.getElementById('err-msg').textContent='Erreur: '+e;});
+  });
+  peer.on('error',function(e){
+    if(e.type==='peer-unavailable'){
+      show('s-err');
+      document.getElementById('err-msg').textContent='Session introuvable. Le présentateur a-t-il démarré la présentation ?';
+    }else{show('s-err');}
+  });
+}
+
+function joinManual(){
+  const v=document.getElementById('code-input').value.trim();
+  if(!v)return;
+  hostId=v;
+  init();
+}
+
+function send(d){if(conn&&conn.open)conn.send(d);}
+
+// ─── ROUTAGE ───────────────────────────────────────────────
+function onMsg(msg){
+  if(!msg||!msg.type)return;
+  if(msg.type==='game')activateGame(msg.game,msg.data||{});
+  else if(msg.type==='question')showQ(msg);
+  else if(msg.type==='memo_start')autoStartML();
+}
+
+function activateGame(g,data){
+  curGame=g;
+  switch(g){
+    case 'quiz_vf':  show('s-qvf');resetVF();if(data.q)showVF(data);break;
+    case 'final_quiz':show('s-fq');resetFQ();if(data.q)showFQ(data);break;
+    case 'memory':   show('s-mem');resetMem();if(data.seq)showSeq(data.seq);break;
+    case 'stroop':   show('s-stroop');resetStr();break;
+    case 'memo_lieux':show('s-ml');resetML();break;
+    case 'recap_cloud':show('s-rc');resetRC();break;
+    default:         show('s-wait');break;
+  }
+}
+
+function showQ(msg){
+  if(msg.game==='quiz_vf')showVF(msg);
+  else if(msg.game==='final_quiz')showFQ(msg);
+}
+
+// ─── QUIZ V/F ──────────────────────────────────────────────
+let vfDone=false,vfIdx=0;
+
+function resetVF(){
+  vfDone=false;vfIdx=0;
+  setVFEnabled(true);
+  document.getElementById('qvf-fb').className='fb';
+  buildDots('qvf-dots',5,0);
+}
+
+function setVFEnabled(v){
+  document.getElementById('b-vrai').disabled=!v;
+  document.getElementById('b-faux').disabled=!v;
+  document.getElementById('b-vrai').style.opacity=v?'1':'0.9';
+  document.getElementById('b-faux').style.opacity=v?'1':'0.9';
+}
+
+function showVF(msg){
+  vfDone=false;vfIdx=msg.qIdx||0;
+  document.getElementById('qvf-q').textContent=(msg.qIdx+1)+'/5 — '+msg.q;
+  setVFEnabled(true);
+  document.getElementById('qvf-fb').className='fb';
+  buildDots('qvf-dots',5,msg.qIdx);
+}
+
+function ansVF(v){
+  if(vfDone)return;vfDone=true;
+  setVFEnabled(false);
+  document.getElementById('b-vrai').style.opacity=v?'1':'0.35';
+  document.getElementById('b-faux').style.opacity=v?'0.35':'1';
+  send({type:'answer',game:'quiz_vf',qIdx:vfIdx,answer:v,pid:pid});
+  const fb=document.getElementById('qvf-fb');
+  fb.textContent='Réponse envoyée. En attente du résultat...';
+  fb.className='fb on';
+}
+
+// ─── QUIZ FINAL ────────────────────────────────────────────
+let fqDone=false,fqIdx=0;
+
+function resetFQ(){
+  fqDone=false;fqIdx=0;
+  document.getElementById('fq-q').textContent='En attente de la première question...';
+  document.getElementById('fq-opts').innerHTML='';
+  document.getElementById('fq-fb').className='fb';
+  buildDots('fq-dots',6,0);
+}
+
+function showFQ(msg){
+  fqDone=false;fqIdx=msg.qIdx||0;
+  document.getElementById('fq-q').textContent=(msg.qIdx+1)+'/6 — '+msg.q;
+  document.getElementById('fq-fb').className='fb';
+  const opts=document.getElementById('fq-opts');
+  opts.innerHTML='';
+  (msg.opts||[]).forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='btn-opt';
+    b.textContent=String.fromCharCode(65+i)+'. '+opt;
+    b.onclick=()=>ansFQ(i,b,msg.a);
+    opts.appendChild(b);
+  });
+  buildDots('fq-dots',6,msg.qIdx);
+}
+
+function ansFQ(idx,btn,correct){
+  if(fqDone)return;fqDone=true;
+  document.querySelectorAll('#fq-opts .btn-opt').forEach(b=>b.disabled=true);
+  btn.classList.add('sel');
+  send({type:'answer',game:'final_quiz',qIdx:fqIdx,answer:idx,pid:pid});
+  if(correct!==undefined){
+    const btns=document.querySelectorAll('#fq-opts .btn-opt');
+    if(btns[correct])btns[correct].classList.add('ok');
+    if(idx!==correct)btn.classList.add('ko');
+  }
+  const fb=document.getElementById('fq-fb');
+  fb.textContent=correct!==undefined&&idx===correct?'✅ Bonne réponse !':'Réponse enregistrée !';
+  fb.className='fb on';
+}
+
+// ─── MÉMOIRE ───────────────────────────────────────────────
+let mSeq=[],mTimer;
+
+function resetMem(){
+  mSeq=[];clearInterval(mTimer);
+  document.getElementById('mp-show').style.display='block';
+  document.getElementById('mp-inp').style.display='none';
+  document.getElementById('mp-res').style.display='none';
+  document.getElementById('ms-disp').textContent='?';
+  document.getElementById('ms-cd').textContent='';
+}
+
+function showSeq(seq){
+  mSeq=seq;
+  document.getElementById('mp-show').style.display='block';
+  document.getElementById('mp-inp').style.display='none';
+  document.getElementById('mp-res').style.display='none';
+  document.getElementById('ms-disp').textContent=seq.join(' ');
+  let t=3;
+  document.getElementById('ms-cd').textContent='Disparaît dans '+t+'s...';
+  mTimer=setInterval(()=>{
+    t--;
+    if(t<=0){
+      clearInterval(mTimer);
+      document.getElementById('ms-disp').textContent='?'.repeat(seq.length).split('').join(' ');
+      document.getElementById('ms-cd').textContent='';
+      document.getElementById('mp-show').style.display='none';
+      document.getElementById('mp-inp').style.display='block';
+      const inp=document.getElementById('ms-inps');
+      inp.innerHTML='';
+      seq.forEach((_,i)=>{
+        const el=document.createElement('input');
+        el.className='mi';el.maxLength=1;el.type='tel';el.inputMode='numeric';
+        el.oninput=()=>{if(el.value&&i<seq.length-1)inp.children[i+1].focus();};
+        inp.appendChild(el);
+      });
+      inp.children[0]&&inp.children[0].focus();
+    }else document.getElementById('ms-cd').textContent='Disparaît dans '+t+'s...';
+  },1000);
+}
+
+function submitMem(){
+  const ins=document.querySelectorAll('#ms-inps .mi');
+  let ok=0;
+  ins.forEach((inp,i)=>{if(inp.value.trim()===mSeq[i])ok++;});
+  document.getElementById('mp-inp').style.display='none';
+  document.getElementById('mp-res').style.display='block';
+  const pct=ok/mSeq.length;
+  document.getElementById('mr-icon').textContent=pct===1?'🏆':pct>=.5?'👍':'🧠';
+  document.getElementById('mr-score').textContent=ok+'/'+mSeq.length;
+  send({type:'result',game:'memory',ok:ok,total:mSeq.length,pid:pid});
+}
+
+// ─── STROOP ────────────────────────────────────────────────
+let sAct=false,sOk=0,sErr=0,sTmr,sCur;
+
+function resetStr(){
+  sAct=false;sOk=0;sErr=0;clearTimeout(sTmr);
+  document.getElementById('str-w').textContent='Prêt ?';
+  document.getElementById('str-w').style.color='white';
+  document.getElementById('str-btns').innerHTML='';
+  document.getElementById('str-r').textContent='';
+  document.getElementById('str-sc').textContent='✅ 0 | ❌ 0';
+}
+
+function startStr(){
+  sAct=true;sOk=0;sErr=0;nextStr();
+}
+
+function nextStr(){
+  if(!sAct)return;
+  const wc=SC[Math.floor(Math.random()*SC.length)];
+  const ic=SC[Math.floor(Math.random()*SC.length)];
+  sCur=ic;
+  document.getElementById('str-w').textContent=wc.n;
+  document.getElementById('str-w').style.color=ic.h;
+  document.getElementById('str-r').textContent='';
+  const btns=document.getElementById('str-btns');
+  btns.innerHTML='';
+  [ic,...SC.filter(c=>c.n!==ic.n).sort(()=>Math.random()-.5).slice(0,3)]
+    .sort(()=>Math.random()-.5).forEach(c=>{
+      const b=document.createElement('button');
+      b.className='stroop-opt';b.textContent=c.n;b.style.background=c.h;
+      b.onclick=()=>chkStr(c);btns.appendChild(b);
+    });
+}
+
+function chkStr(chosen){
+  if(!sAct)return;
+  const ok=chosen.n===sCur.n;
+  document.getElementById('str-r').textContent=ok?'✅':'❌ '+sCur.n;
+  document.getElementById('str-r').style.color=ok?'#2D6A4F':'#C0392B';
+  if(ok)sOk++;else sErr++;
+  document.getElementById('str-sc').textContent='✅ '+sOk+' | ❌ '+sErr;
+  document.querySelectorAll('#str-btns .stroop-opt').forEach(b=>b.disabled=true);
+  sTmr=setTimeout(nextStr,1000);
+}
+
+function stopStr(){
+  sAct=false;clearTimeout(sTmr);
+  document.getElementById('str-w').textContent='Score final';
+  document.getElementById('str-btns').innerHTML='';
+  send({type:'result',game:'stroop',ok:sOk,err:sErr,pid:pid});
+}
+
+// ─── MÉTHODE DES LIEUX ─────────────────────────────────────
+let mlTimer,mlWords=[];
+
+function resetML(){
+  clearInterval(mlTimer);mlWords=[];
+  document.getElementById('ml-learn').style.display='block';
+  document.getElementById('ml-recall').style.display='none';
+  document.getElementById('ml-reveal').style.display='none';
+  document.getElementById('ml-cd').style.display='none';
+  document.getElementById('ml-start-btn').style.display='block';
+  document.getElementById('ml-words').innerHTML='';
+  const grid=document.getElementById('ml-grid');
+  grid.innerHTML='';
+  MW.forEach((w,i)=>{
+    const d=document.createElement('div');
+    d.className='memo-word';
+    d.style.background=MW_C[i];
+    d.textContent=w;
+    grid.appendChild(d);
+  });
+}
+
+function startML(){
+  document.getElementById('ml-start-btn').style.display='none';
+  let t=90;
+  const cd=document.getElementById('ml-cd');
+  cd.style.display='block';cd.textContent=t+'s';
+  clearInterval(mlTimer);
+  mlTimer=setInterval(()=>{
+    t--;cd.textContent=t+'s';
+    if(t<=0){clearInterval(mlTimer);switchToMLRecall();}
+  },1000);
+}
+
+function autoStartML(){
+  if(curGame==='memo_lieux')startML();
+}
+
+function switchToMLRecall(){
+  document.getElementById('ml-learn').style.display='none';
+  document.getElementById('ml-recall').style.display='block';
+}
+
+function addMLWord(e){
+  if(e.key!=='Enter')return;
+  const inp=document.getElementById('ml-inp');
+  const v=inp.value.trim();if(!v)return;
+  mlWords.push(v.toLowerCase());
+  const c=document.createElement('div');c.className='chip';c.textContent=v;
+  document.getElementById('ml-words').appendChild(c);
+  inp.value='';
+}
+
+function submitML(){
+  const reveal=MW.map(w=>({word:w,found:mlWords.some(a=>w.toLowerCase().startsWith(a.substring(0,3)))}));
+  const score=reveal.filter(r=>r.found).length;
+  document.getElementById('ml-recall').style.display='none';
+  document.getElementById('ml-reveal').style.display='block';
+  const items=document.getElementById('ml-rev-items');
+  items.innerHTML='';
+  reveal.forEach(r=>{
+    const c=document.createElement('div');c.className='r-chip';
+    c.style.background=r.found?'#2D6A4F':'#C0392B';c.style.color='#fff';
+    c.textContent=(r.found?'✅ ':'❌ ')+r.word;
+    items.appendChild(c);
+  });
+  document.getElementById('ml-score-t').textContent=score+'/8 mots mémorisés';
+  send({type:'result',game:'memo_lieux',score:score,words:mlWords,pid:pid});
+}
+
+// ─── RÉCAP WORD CLOUD ──────────────────────────────────────
+function resetRC(){
+  document.getElementById('rc-inp').value='';
+  document.getElementById('rc-form').style.display='block';
+  document.getElementById('rc-sent').style.display='none';
+}
+
+function sendRC(){
+  const v=document.getElementById('rc-inp').value.trim();
+  if(!v)return;
+  send({type:'word',game:'recap_cloud',word:v,pid:pid});
+  document.getElementById('rc-form').style.display='none';
+  document.getElementById('rc-sent').style.display='block';
+}
+
+// ─── UTILITAIRES ───────────────────────────────────────────
+function buildDots(id,total,current){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.innerHTML='';
+  for(let i=0;i<total;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i<current?' done':i===current?' cur':'');
+    el.appendChild(d);
+  }
+}
+
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
